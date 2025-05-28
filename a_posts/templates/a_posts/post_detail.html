@@ -1,0 +1,133 @@
+{% extends 'layouts/blank.html' %}
+{% load static %}
+{% block content %} 
+
+<article class="card mb-8 card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
+    <div class="flex items-center justify-between px-4 h-14">
+        <h3 class="text-lg font-bold w-[50%] truncate">{{ post.title }}</h3>
+        <div class="text-sm text-gray-500">flickr @ <a href="" class="hover:underline" target="blank">{{ post.artist }}</a></div>
+    </div>
+    <figure>
+        <p><img class="w-full" src="{{ post.image }}"></p>
+    </figure>
+    <div class="p-2 pb-2">
+        <p class="flex items-center gap-1 mb-4" >
+            <a href=""><img class="w-8 h-8 object-cover rounded-full" src="https://img.icons8.com/small/96/A9A9A9/happy.png"></a>
+            <a class="font-bold hover:underline" href=""><span>{{ user.first_name }}</span></a>
+            <a class="text-sm text-gray-400" href=""><span>@{{ user.username|title }}</span></a>
+            <span class="text-sm text-gray-400">| created {{ post.created }}</span>
+        </p>
+        <h1 class="text-5xl mb-10 px-4 font1">{{ post.body }}</h1>
+        <div class="flex items-center gap-2 text-sm mb-5">
+            {% for tag in post.tags.all %}
+            <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-500 hover:text-white" href="{% url 'category' tag.slug %}">{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+        <div class="flex items-center justify-between text-sm px-2">
+            <a class="font-bold hover:underline" href="">
+                Comments
+                <span class="font-light text-gray-500 ml-2">3</span>
+            </a>
+            <div class="flex items-center gap-4 [&>a:hover]:underline">
+                <div class="flex items-center gap-1">
+                    <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
+                    1
+                </div>
+                <a href="">Like</a>
+                <a href="{% url 'edit_post' post.pk %}">Edit</a>
+                <a href="{% url 'delete_post' post.pk %}">Delete</a>
+            </div>
+        </div>
+    </div>
+</article>
+
+<div class="card !pb-0 mb-8 -mt-3 rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
+    <form method="POST" class="flex items-center p-4" autocomplete="off">
+        <input type="text" name="comment" placeholder="Add comment..." maxlength="150">
+        <button @click="open = false" class="block ml-2" type="submit">Submit</button>
+    </form>
+</div>
+
+<div class="mb-20">
+    <div id="tabs" class="ml-4 flex gap-2 mb-4">  <!-- Increased gap to 2 -->
+        <div class="card-container">
+            <a class="tab selected rounded-lg border border-gray-200 bg-white shadow-sm px-4 py-2 text-sm font-medium text-gray-900 hover:bg-blue-50 transition-colors">
+                Newest First
+            </a>
+        </div>
+        <div class="card-container">
+            <a class="tab rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors">
+                Top Comments
+            </a>
+        </div>
+    </div>
+
+    <div class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white" id="tab-contents">
+
+        <comment class="card p-4 !mb-4">
+            <div class="flex justify-between items-center px-2"> 
+                <a class="flex items-center gap-1 mb-2" href="">
+                    <img class="w-8 h-8 object-cover rounded-full" src="https://img.icons8.com/small/96/A9A9A9/happy.png"> 
+                    <span class="font-bold hover:underline">Bart</span>
+                    <span class="text-sm font-normal text-gray-400">@bartsimpson</span>
+                </a>
+            </div>
+            <p class="text-xl px-2">
+                This is a comment from Bart
+            </p>
+            <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
+                <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
+                    <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
+                        <svg transform ="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
+                            <path d="M24 22h-24l12-20z"/>
+                        </svg>
+                    </div>
+                    Replies
+                    <span class="font-light text-gray-500 ml-1">1</span>
+                </a>
+                <div class="flex items-center gap-4 [&>a:hover]:underline">
+                    <div class="flex items-center gap-1">
+                        <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
+                        1
+                    </div>
+                    <a href="">Like</a>
+                    <a href="">Delete</a>
+                </div>
+
+                <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 grid grid-cols-1">
+
+                    <reply class="flex items-end justify-between py-4 border-t">
+                        <div class="flex">
+                            <a href="">
+                                <img class="w-8 h-8 object-cover rounded-full mr-2" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
+                            </a>
+                            <div class="w-fit">
+                                <a class="block" href="">
+                                    <span class="font-bold hover:underline">Homer</span>
+                                    <span class="text-sm text-gray-400">@homersimpson</span>
+                                </a>
+                                <div class="mr-3">This is a reply from Homer</div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 [&>a:hover]:underline">
+                            <div class="flex items-center gap-1">
+                                <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
+                                1
+                            </div>
+                            <a href="">Like</a>
+                            <a href="">Delete</a>
+                        </div>
+                    </reply>
+
+                    <form method="POST" class="replyform flex justify-between" autocomplete="off">
+                        <input type="text" name="reply" placeholder="Add reply..." maxlength="150">
+                        <button class="block" type="submit">Submit</button>
+                    </form>
+                </div>
+            </div> 
+        </comment>
+
+    </div>
+</div>
+
+{% endblock %}

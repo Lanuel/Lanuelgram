@@ -1,0 +1,13 @@
+{% extends 'layouts/blank.html' %}
+{% load static %}
+{% block content %} 
+
+{% for post in post_list %}
+    {% include 'layouts/post_article.html' %}
+<br>
+{% empty %}
+    <h2>No posts available yet.</h2>
+{% endfor %}
+
+{% endblock %}
+

@@ -1,0 +1,43 @@
+{% extends "layouts/post_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="!max-w-none !mx-64 !p-0 scale-[0.7] origin-top justify-center">
+    <h1 class="mb-4">Edit Post</h1>
+    <div class="w-full max-w-2xl p-4 bg-white rounded-lg shadow">
+        <div class="flex items-center mb-4">
+            <img class="w-20 h-20 object-cover rounded-xl mr-4" src="{{ post.image }}">
+            <h3 class="text-lg font-bold">{{ post.title }}</h3>
+        </div>
+        
+        <div class="pb-2">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.title|as_crispy_field }}
+                {{ form.body|as_crispy_field }}
+                <label >{{ form.tags.label }}:</label>
+                <div class="id_tags mt-4">
+                    {% for checkbox in form.tags %}
+                    <div class="inline-block mr-2 mb-2">
+                        <input
+                        type="checkbox"
+                        name="tags"
+                        value="{{ checkbox.data.value }}"
+                        id="{{ checkbox.id_for_label }}"
+                        {% if checkbox.data.selected %}checked{% endif %}>
+                        <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                <br>
+                <div class="pt-4 flex justify-center space-x-2">
+                    <a class="button secondaryAction hover:bg-yellow-300" href="javascript:window.history.back();">Go Back</a>
+                    <button class=" hover:bg-green-300" type="submit">Update Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

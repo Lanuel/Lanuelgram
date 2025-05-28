@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "layouts/post_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %} 
+
+<div class="!max-w-none !mx-64 !p-4 font-bold scale-[0.7] origin-top justify-center">
+    <h1 >Create Post</h1>
+    <div class="card !p-8 bg-white rounded-2xl">
+        
+        <div class="allauth flex items-center mb-6">
+            <img class="h-5 object-cover mr-1" src="https://img.icons8.com/small/96/333333/search--v1.png"/>
+            <a href="https://www.flickr.com/explore" target="_blank" class="hover:underline text-gray-500">Find an image on Flickr</a>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.url|as_crispy_field }}
+            {{ form.body|as_crispy_field }}
+            <label >{{ form.tags.label }}:</label>
+            <div class="id_tags mt-4">
+                {% for checkbox in form.tags %}
+                <div class="inline-block mr-2 mb-2">
+                    <input
+                    type="checkbox"
+                    name="tags"
+                    value="{{ checkbox.data.value }}"
+                    id="{{ checkbox.id_for_label }}"
+                    {% if checkbox.data.selected %}checked{% endif %}>
+                    <label for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+                {% endfor %}
+            </div>
+            <br>
+            <a class="button secondaryAction hover:bg-yellow-300" href="javascript:window.history.back();">Go Back</a>
+            <button class=" hover:bg-green-300" type="submit">Submit Post</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+</html>
+
