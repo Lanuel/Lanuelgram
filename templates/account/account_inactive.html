@@ -1,0 +1,39 @@
+{% extends "allauth/layouts/entrance.html" %}
+{% load i18n %}
+{% load allauth %}
+{% block head_title %}
+    {% translate "Account Inactive" %}
+{% endblock head_title %}
+{% block content %}
+    {% element h1 %}
+        {% translate "Account Inactive" %}
+    {% endelement %}
+    {% element p %}
+        {% translate "This account is currently inactive. You can reactivate it within 30 days using the link below." %}
+        {% if reactivation_uidb64 and reactivation_token %}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <h3 class="font-semibold text-blue-800 mb-2">Reactivation Link:</h3>
+                <p class="text-sm text-blue-700 mb-3">
+                    Save this link to reactivate your account later:
+                </p>
+                <div class="bg-white border rounded p-2 mb-3">
+                    <code class="text-xs break-all">{{ reactivation_link }}</code>
+                </div>
+                <a href="{% url 'profile-reactivation' uidb64=reactivation_uidb64 token=reactivation_token %}">
+                Reactivate Account
+            </a>
+            </div>
+        {% else %}
+            <div class="text-center">
+                <p>
+                    The reactivation link is not available.
+                    <a href="{% url 'home' %}" class="text-blue-600 hover:text-green-600">
+                    Return Home</a>
+                </p>
+            </div>
+            
+        {% endif %}
+
+    {% endelement %}
+    
+{% endblock content %}

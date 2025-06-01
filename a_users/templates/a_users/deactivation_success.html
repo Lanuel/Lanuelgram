@@ -1,0 +1,53 @@
+{% extends "allauth/layouts/entrance.html" %} 
+{% load i18n %} 
+{% load allauth %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+  <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+    {% element h1 class="text-2xl font-bold text-center mb-6" %} 
+    {% translate "Account Deactivated" %} 
+    {% endelement %} 
+    
+    {% element p class="text-gray-600 text-justify mb-6 leading-relaxed" %} 
+        {% blocktrans with username=deactivated_username %}
+            Hi {{ username }}, your account has been successfully deactivated. You can reactivate it within 30 days using the link below.
+        {% endblocktrans %}
+    {% endelement %} 
+
+    {% if reactivation_uidb64 and reactivation_token %}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+        <h3 class="font-semibold text-blue-800 mb-2">
+            {% translate "Reactivation Link:" %}
+        </h3>
+
+        <p class="text-sm text-blue-700 mb-3">
+            {% translate "A reactivation link has been sent to your email address." %}
+        </p>
+
+        <!-- <div class="bg-white border rounded p-3 mb-4">
+                <code class="text-xs break-all text-gray-800">
+                    {{ reactivation_link }}
+                </code>
+            </div> -->
+
+        <a
+            href="{% url 'profile-reactivation' uidb64=reactivation_uidb64 token=reactivation_token %}"
+            class="inline-block bg-blue-600 text-green-500 px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-200 font-medium"
+        >
+            {% translate "Reactivate Account Now" %}
+        </a>
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-6">
+      <a
+        href="{% url 'home' %}"
+        class="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+      >
+        {% translate "Return to Home" %}
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock content %}

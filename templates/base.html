@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load static %}
+{% load django_htmx %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Django Template">
+    <title>Lanuelgram</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://unpkg.com/htmx.org@2.0.2"></script>
+    {% django_htmx_script %}
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' if debug else 'css/style.min.css' %}">
+</head>
+
+<body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="{% block class %}{% endblock %}">
+	
+    {% include 'includes/messages.html' %}
+
+    {% include 'includes/header.html' %}
+
+    {% block layout %}
+    {% endblock %}
+
+
+    <footer class="text-center text-muted py-3 text-amber-50">
+        &copy; {{ year|default:"2025" }} Lanuelgram. All rights reserved.
+    </footer>
+
+    {% block javascript %}{% endblock %}
+
+</body>
+</html>

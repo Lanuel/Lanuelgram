@@ -1,0 +1,126 @@
+@import "tailwindcss";
+[x-cloak] { 
+    display: none !important; 
+}
+:root {
+    --primary: rgb(88, 40, 244);
+    --primary-hover: rgb(69, 29, 200);
+    --black: #1f2937;
+    --font1: 'Lobster';
+}
+body {
+    @apply bg-gray-900;
+}
+.bg-image {
+  background-image: url("../images/bg_image.gif");
+  background-size: cover;
+  background-position: center;
+}
+.font-lobster {
+  font-family: 'Lobster', sans-serif;
+}
+h1 {
+    @apply text-4xl font-bold mb-4;
+}
+h2 {
+    @apply text-xl font-bold mb-2
+}
+h3 {
+    @apply text-lg font-bold
+}
+p {
+    @apply mb-4
+}
+
+.button, button, [type='submit'], [type='button'] {
+    @apply bg-indigo-600 text-white font-bold rounded-lg shadow-lg transition-all cursor-pointer
+}
+.button, button a, [type='submit'], [type='button'] {
+    @apply px-6 py-4 inline-block 
+}
+.button:hover, button:hover, [type='submit']:hover, [type='button']:hover {
+    @apply bg-green-700
+}
+.button:active, button:active, [type='submit']:active, [type='button']:active {
+    @apply scale-95
+}
+.button.alert, button.alert {
+    @apply bg-red-700
+}
+.button.alert:hover, button.alert:hover {
+    @apply bg-red-600
+}
+.button-red {
+    @apply !bg-red-500 hover:!bg-red-600
+}
+.button-gray {
+    @apply !bg-gray-300 hover:!bg-[#c3c9d0]
+}
+.navitems>li>a {
+    @apply flex items-center gap-2 h-12 px-4 hover:bg-[rgba(31,41,55,0.3)] rounded-lg;
+}
+.hoverlist>* {
+    @apply hover:bg-gray-100 rounded-md transition duration-150;
+}
+.hoverlist2>* {
+    @apply hover:bg-gray-700 rounded-md transition duration-150;
+}
+.hoverlist>*>a {
+    @apply flex items-center p-2;
+}
+.highlight {
+    @apply !bg-indigo-100;
+}
+/* .allauth a {
+    @apply underline underline-offset-2;
+}
+.allauth a:hover {
+    @apply text-indigo-500
+} */
+.allauth form[action="/accounts/signup/"] ul {
+    @apply hidden
+}
+.allauth form[action="/accounts/signup/"] ul.errorlist {
+    @apply block
+}
+.allauth .helptext {
+    @apply block mt-4
+}
+/* label {
+    @apply hidden
+} */
+/* Reset file input field so only the button is interactive */
+input[type="file"] {
+  @apply p-0 m-0 border-none bg-transparent  max-w-[40%];
+}
+
+/* Style the actual button portion */
+input[type="file"]::file-selector-button {
+  @apply bg-gray-400 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600;
+}
+
+/* For WebKit (Safari, older Chrome) */
+input[type="file"]::-webkit-file-upload-button {
+  @apply bg-gray-400 text-white py-2 px-4 rounded-lg cursor-pointer hover:bg-blue-600;
+}
+
+.textarea, textarea, input {
+    @apply w-full rounded-lg py-4 px-5 bg-blue-100;
+}
+.errorlist li {
+    @apply p-1 pl-4 border-l-red-500 border-l-4 border-solid mb-2 text-red-500
+}
+label[for="id_remember"] {
+    @apply inline-block w-auto mr-2
+}
+input[name="remember"] {
+    @apply w-auto
+}
+.alert-info { @apply bg-sky-500 }
+.alert-success { @apply bg-green-500 }
+.alert-warning { @apply bg-red-500 }
+.alert-danger { @apply bg-red-500 }
+
+a[href*="password/reset"] {
+      @apply underline underline-offset-2 text-sm hover:text-indigo-500;
+    }

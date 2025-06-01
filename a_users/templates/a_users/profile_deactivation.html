@@ -1,0 +1,17 @@
+{% extends 'layouts/box.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<h1>This will deactivate your account</h1>
+<p style="margin-bottom: 20px;">You are about to start the deactivation process of your Lanuelgram account. Your display name, @username, and public profile will no longer be available on our website</p>
+
+<h2>What else you should know</h2>
+<p>You can restore your Lanuelgram account if it was accidentally or wrongfully deactivated for up to 30 days after deactivation.</p>
+<form method='POST'>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="button-red mt-6">Deactivate</button>
+    <a class="button button-gray ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+</form>
+
+{% endblock %}

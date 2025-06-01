@@ -1,0 +1,48 @@
+{% load static %}
+<article class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
+    <div class="flex items-center justify-between px-4 h-14">
+        <h3 class="text-start leading-5 mr-1">{{ post.title }}</h3>
+        <div class="text-sm text-gray-400 truncate">flickr<a href="" class="hover:underline ml-1" target="blank">@{{ post.artist }}</a></div>
+    </div>
+    <figure>
+        <a href="{% url 'post_detail' post.pk %}"><img class="w-full" src="{{ post.image }}"></a>
+    </figure>
+    <div class="p-4 pb-2">
+        {% if post.author %}
+        <p class="flex items-center gap-1 mb-4">
+            <a href=""><img class="w-8 h-8 object-cover rounded-full" src="{{ post.author.profile.avatar }}"></a>
+            <a class="font-bold hover:underline" href="{% url 'userprofile' post.author.username %}"><span>{{ post.author.profile.name }}</span></a>
+            <a class="text-sm text-gray-400" href="{% url 'userprofile' post.author.username %}"><span>@{{ post.author.username|title }}</span></a>
+            <!-- <span class="text-sm text-gray-400">created {{ post.created|timesince }} ago.</span> -->
+        </p>
+        {% else %}
+        <div>
+            <img class="w-8 h-8 object-cover rounded-full" src="{% static 'images/avatar.svg' %}" alt="Post author default avatar">
+            <span class="text-gray-500">no author</span>
+        </div>
+        {% endif %}
+        <h1 class="text-5xl mb-10 px-4 font-lobster">{{ post.body }}</h1>
+        <div class="flex items-center gap-2 text-sm mb-5 flex-wrap">
+            {% for tag in post.tags.all %}
+                <a href="{% url 'category' tag.slug %}" class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white">{{ tag }}</a>
+            {% endfor %}
+        </div>
+        <div class="flex items-center justify-between text-sm px-2">
+                    <a class="font-bold hover:underline" href="{% url 'post_detail' post.id %}">
+                        Comments
+                        <span class="font-light text-gray-500 ml-1">{{post.comments.all.count}}</span>
+                    </a>
+            <div class="flex items-center gap-4 [&>a:hover]:underline">
+                <div class="flex items-center gap-1">
+                    <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
+                    1
+                </div>
+                <a href="">Like</a>
+                {% if request.user == post.author %}
+                    <a href="{% url 'edit_post' post.pk %}">Edit</a>
+                    <a href="{% url 'delete_post' post.pk %}">Delete</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>

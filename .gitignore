@@ -1,0 +1,7 @@
+.venv/
+node_modules/
+media/
+__pycache__/
+db.sqlite3
+.env
+/staticfiles/
