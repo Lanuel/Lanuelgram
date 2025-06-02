@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm
-from .models import Post, Comment
+from .models import Post, Comment, Reply
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
 
@@ -62,4 +62,12 @@ class CommentCreateForm(ModelForm):
         labels = {
             "body": ""
         }
-        
+
+
+class ReplyCreateForm(ModelForm):
+    class Meta:
+        model = Reply
+        fields = ["body"]
+        labels = {
+            "body": ""
+        }

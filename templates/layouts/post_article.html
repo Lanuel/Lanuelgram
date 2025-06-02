@@ -28,19 +28,30 @@
             {% endfor %}
         </div>
         <div class="flex items-center justify-between text-sm px-2">
-                    <a class="font-bold hover:underline" href="{% url 'post_detail' post.id %}">
-                        Comments
-                        <span class="font-light text-gray-500 ml-1">{{post.comments.all.count}}</span>
-                    </a>
+
+                <a class="font-bold hover:underline" href="{% url 'post_detail' post.id %}">
+                {% if post.comments.count %}
+                    Comments
+                    <span class="font-light text-gray-500 ml-1">{{post.comments.count}}</span>
+                {% else %}
+                    {% if user.is_authenticated %}
+                        Add comment
+                    {% endif %}
+                {% endif %}
+                </a>
             <div class="flex items-center gap-4 [&>a:hover]:underline">
                 <div class="flex items-center gap-1">
                     <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
                     1
                 </div>
                 <a href="">Like</a>
-                {% if request.user == post.author %}
+                {% if user.is_authenticated and post.author == user %}
                     <a href="{% url 'edit_post' post.pk %}">Edit</a>
-                    <a href="{% url 'delete_post' post.pk %}">Delete</a>
+                    <a href="{% url 'delete_post' post.pk %}" 
+                    class="text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
+                    >
+                        Delete
+                    </a>
                 {% endif %}
             </div>
         </div>

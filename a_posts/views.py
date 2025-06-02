@@ -2,13 +2,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic.list import MultipleObjectMixin
-from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import FormMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from .forms import PostCreationForm, PostEditForm, CommentCreateForm
-from .models import Post, Tag, Comment
+from .forms import PostCreationForm, PostEditForm, CommentCreateForm, ReplyCreateForm
+from .models import Post, Tag, Comment, Reply
 from django.urls import reverse_lazy
 from bs4 import BeautifulSoup
 import requests
@@ -30,6 +30,7 @@ class TagFilterMixin:
         context['categories'] = Tag.objects.all()
         context['current_tag_slug'] = self.kwargs.get('tags')
         context["form"] = CommentCreateForm()
+        context["reply_form"] = ReplyCreateForm()
         return context
     
 
@@ -126,18 +127,56 @@ class PostDetailView(TagFilterMixin, FormMixin, DetailView):
     def get_success_url(self):
         return self.request.path
 
+    def get_reply_form(self):
+        return ReplyCreateForm(self.request.POST or None)
+
+    @method_decorator(login_required)
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         form = self.get_form()
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.author = self.request.user
-            comment.parent_post = self.object
-            comment.save()
-            return redirect(self.get_success_url())
-        return self.form_invalid(form)
+        reply_form = self.get_reply_form()
+        form_type = request.POST.get("form_type")
+
+        if form_type == "comment":
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.author = request.user
+                comment.parent_post = self.object
+                comment.save()
+                return redirect(self.get_success_url())
+
+        elif form_type == "reply":
+            if reply_form.is_valid():
+                reply = reply_form.save(commit=False)
+                reply.author = request.user
+                reply.parent_comment = Comment.objects.get(pk=request.POST.get("parent_comment_id"))
+                reply.save()
+                return redirect(self.get_success_url())
+
+        return self.form_invalid(form if form_type == "comment" else reply_form)
+
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = self.get_form()
+        context["reply_form"] = self.get_reply_form()
         return context
+    
+
+class CommentDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Comment
+    template_name = "a_posts/comment_delete.html"
+    success_message = "Comment deleted successfully"
+
+    def get_success_url(self):
+        return reverse_lazy("post_detail", kwargs={'pk': self.object.parent_post.pk})
+
+
+class ReplyDeleteView(SuccessMessageMixin, LoginRequiredMixin, DeleteView):
+    model = Reply
+    template_name = "a_posts/reply_delete.html"
+    success_message = "Reply deleted successfully"
+
+    def get_success_url(self):
+        return reverse_lazy("post_detail", kwargs={'pk': self.object.parent_comment.pk})

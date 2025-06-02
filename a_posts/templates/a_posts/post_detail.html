@@ -27,7 +27,7 @@
         <div class="flex items-center justify-between text-sm px-2">
             <a class="font-bold hover:underline" href="">
                 Comments
-                <span class="font-light text-gray-500 ml-2">{{ post.comments.all.count }}</span>
+                <span class="font-light text-gray-500 ml-2">{{ post.comments.count }}</span>
             </a>
             <div class="flex items-center gap-4 [&>a:hover]:underline">
                 <div class="flex items-center gap-1">
@@ -47,42 +47,55 @@
 <!-- Comments form -->
 <div class="card !pb-0 mb-8 -mt-3 rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
     <form method="post" class="flex items-center p-4 gap-2 w-full" autocomplete="off">
-    {% csrf_token %}
-    {{ form.body.errors }}
-    <input 
-        type="text" 
-        name="body" 
-        placeholder="Add comment..." 
-        class="flex-1 bg-blue-100 text-lg p-2 rounded-md" 
-        value="{{ form.body.value|default:'' }}"
-    >
-    <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md">
-        Submit
-    </button>
-</form>
+        {% csrf_token %}
+        {{ form.body.errors }}
+
+        <!-- Hidden input to identify this form as a comment -->
+        <input type="hidden" name="form_type" value="comment">
+
+        <input 
+            type="text" 
+            name="body" 
+            placeholder="Add comment..." 
+            class="flex-1 bg-blue-100 text-lg p-2 rounded-md" 
+            value="{{ form.body.value|default:'' }}"
+        >
+
+        <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md">
+            Submit
+        </button>
+    </form>
+
 
 </div>
 
 <!-- Comments display -->
-<div class="mb-20">
-    <div id="tabs" class="ml-4 flex gap-2 mb-4">  <!-- Increased gap to 2 -->
-        <div class="card-container">
-            <a class="tab selected rounded-lg border border-gray-200 bg-red-300 shadow-sm px-4 py-2 text-sm font-medium text-gray-900 hover:bg-blue-50 transition-colors">
-                Newest First
-            </a>
-        </div>
-        <div class="card-container">
-            <a class="tab rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors">
-                Top Comments
-            </a>
-        </div>
-    </div>
+{% if post.comments.count %}
+    <div class="mb-20">
 
-    <div class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white" id="tab-contents">
-            {% for comment in post.comments.all %}
-                {% include 'a_posts/comments.html' %}
-            {% endfor %}
-    </div>
+        <div id="tabs" class="ml-4 flex gap-2 mb-4">  <!-- Increased gap to 2 -->
+            <div class="card-container">
+                <a class="tab selected rounded-lg border border-gray-200 bg-red-300 shadow-sm px-4 py-2 text-sm font-medium text-gray-900 hover:bg-blue-50 transition-colors">
+                    Newest First
+                </a>
+            </div>
+            <div class="card-container">
+                <a class="tab rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors">
+                    Top Comments
+                </a>
+            </div>
+        </div>
+
+        <div class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white" id="tab-contents">
+            <div class="divide-y divide-gray-300">
+    {% for comment in post.comments.all %}
+        <div class="px-6">
+            {% include 'a_posts/comments.html' %}
+        </div>
+    {% endfor %}
 </div>
 
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

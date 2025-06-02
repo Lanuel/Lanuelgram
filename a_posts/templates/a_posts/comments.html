@@ -1,23 +1,64 @@
 {% load static %}
 <comment class="card p-4 !mb-4">
-    <div class="flex justify-between items-center px-2"> 
+    <article class="flex items-center justify-between px-3 py-2" aria-labelledby="comment-author-{{ comment.id }}">
         {% if comment.author %}
-            <p class="flex items-center gap-1 mb-2">
-                <a href="{% url 'userprofile' comment.author.username %}"><img class="w-8 h-8 object-cover rounded-full" src="{{ comment.author.profile.avatar }}"></a>
-                <a class="font-bold hover:underline" href="{% url 'userprofile' comment.author.username %}"><span>{{ comment.author.profile.name }}</span></a>
-                <a class="text-sm text-gray-400" href="{% url 'userprofile' comment.author.username %}"><span>@{{ comment.author.username|title }}</span></a>
-                <span class="text-sm text-gray-400">| created {{ comment.created }}</span>
-            </p>
+            <div class="flex items-center gap-3 w-full">
+                <!-- Avatar -->
+                <a href="{% url 'userprofile' comment.author.username %}" 
+                class="flex-shrink-0" 
+                aria-label="View {{ comment.author.profile.name }}'s profile">
+                    <img 
+                        class="w-8 h-8 object-cover rounded-full" 
+                        src="{{ comment.author.profile.avatar }}" 
+                        alt="{{ comment.author.profile.name }}'s profile picture"
+                        loading="lazy"
+                        width="32" 
+                        height="32">
+                </a>
+
+                <!-- Author Info -->
+                <div class="flex flex-col min-w-0">
+                    <div class="flex items-center gap-2">
+                        <a href="{% url 'userprofile' comment.author.username %}" 
+                        id="comment-author-{{ comment.id }}"
+                        class="font-semibold text-gray-800 hover:underline truncate focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded"
+                        title="View {{ comment.author.profile.name }}'s profile">
+                            {{ comment.author.profile.name }}
+                        </a>
+                        <a href="{% url 'userprofile' comment.author.username %}" 
+                        class="text-sm text-gray-500 hover:underline truncate focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 rounded" 
+                        rel="author"
+                        aria-label="Username: {{ comment.author.username }}">
+                            @{{ comment.author.username }}
+                        </a>
+                    </div>
+                    <time datetime="{{ comment.created|date:'c' }}" 
+                        class="text-sm text-gray-400 whitespace-nowrap"
+                        aria-label="Posted on {{ comment.created|date:'F j, Y \a\t g:i A' }}">
+                        • {{ comment.created|date:"M j, Y, g:i A" }}
+                    </time>
+                </div>
+            </div>
         {% else %}
-            <div>
-                <img class="w-8 h-8 object-cover rounded-full" src="{% static 'images/avatar.svg' %}" alt="Post author default avatar">
-                <span class="text-gray-500">no author</span>
+            <div class="flex items-center gap-3" role="group" aria-label="Anonymous comment">
+                <img 
+                    class="w-8 h-8 object-cover rounded-full" 
+                    src="{% static 'images/avatar.svg' %}" 
+                    alt="Default anonymous user avatar"
+                    loading="lazy"
+                    width="32" 
+                    height="32">
+                <span class="text-sm text-gray-500" aria-label="Comment author not available">
+                    No author
+                </span>
             </div>
         {% endif %}
-    </div>
-    <p class="text-xl px-2">
+    </article>
+
+    <p class="text-lg mt-2 px-2 break-words">
         {{ comment.body }}
     </p>
+    
     <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
         <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
             <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
@@ -25,8 +66,14 @@
                     <path d="M24 22h-24l12-20z"/>
                 </svg>
             </div>
+            {% if comment.replies.count %}
             Replies
-            <span class="font-light text-gray-500 ml-1">1</span>
+            <span class="font-light text-gray-500 ml-1">{{ comment.replies.count }}</span>
+            {% else %}
+                {% if user.is_authenticated %}
+                    Add a reply
+                {% endif %}
+            {% endif %}
         </a>
         <div class="flex items-center gap-4 [&>a:hover]:underline">
             <div class="flex items-center gap-1">
@@ -34,40 +81,46 @@
                 1
             </div>
             <a href="">Like</a>
-            {% if request.user == comment.author %}
-                <a href="">Delete</a>
+            {% if user.is_authenticated and comment.author == user %}
+                <a href="{% url 'delete_comment' comment.pk %}" 
+                class="text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
+                >
+                    Delete
+                </a>
             {% endif %}
         </div>
 
         <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 grid grid-cols-1">
-
-            <reply class="flex items-end justify-between py-4 border-t">
-                <div class="flex">
-                    <a href="">
-                        <img class="w-8 h-8 object-cover rounded-full mr-2" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                    </a>
-                    <div class="w-fit">
-                        <a class="block" href="">
-                            <span class="font-bold hover:underline">Homer</span>
-                            <span class="text-sm text-gray-400">@homersimpson</span>
-                        </a>
-                        <div class="mr-3">This is a reply from Homer</div>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4 [&>a:hover]:underline">
-                    <div class="flex items-center gap-1">
-                        <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
-                        1
-                    </div>
-                    <a href="">Like</a>
-                    <a href="">Delete</a>
-                </div>
-            </reply>
-
-            <form method="POST" class="replyform flex justify-between" autocomplete="off">
-                <input type="text" name="reply" placeholder="Add reply..." maxlength="150">
-                <button class="block" type="submit">Submit</button>
+            {% for reply in comment.replies.all %}
+                {% include 'a_posts/replies.html' %}
+            {% endfor %}
+            
+            <!-- Reply form -->
+            <form method="post" class="flex items-center p-4 gap-2 w-full" autocomplete="off">
+                {% csrf_token %}
+                {{ reply_form.body.errors }}
+                <input 
+                    type="hidden" 
+                    name="form_type" 
+                    value="reply"
+                >
+                <input 
+                    type="hidden" 
+                    name="parent_comment_id" 
+                    value="{{ comment.pk }}"  
+                >
+                <input 
+                    type="text" 
+                    name="body" 
+                    placeholder="Add a reply..." 
+                    class="flex-1 bg-blue-100 text-lg p-2 rounded-md" 
+                    value="{{ reply_form.body.value|default:'' }}"
+                >
+                <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md">
+                    Submit
+                </button>
             </form>
+
         </div>
     </div> 
 </comment>
