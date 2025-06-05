@@ -1,0 +1,5 @@
+<!-- templates\snippets\add_comment.html -->
+
+{% include 'a_posts/comments.html' with comment=comment %}
+
+<span hx-swap-oob="true" id="commentscount-{{ post.id }}" class="font-semibold" aria-label="Number of comments">{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</span>

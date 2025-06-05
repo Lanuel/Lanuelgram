@@ -1,4 +1,6 @@
+<!-- a_posts\templates\a_posts\comments.html -->
 {% load static %}
+<div class="px-4 py-2 opacity-0 block -mt-10 ease-in-out" _="on load transition my margin-top to 0 over 0.2 seconds then transition my opacity to 1 over 0.4 seconds">
 <comment class="card p-4 !mb-4">
     <article class="flex items-center justify-between px-3 py-2" aria-labelledby="comment-author-{{ comment.id }}">
         {% if comment.author %}
@@ -49,7 +51,7 @@
                     width="32" 
                     height="32">
                 <span class="text-sm text-gray-500" aria-label="Comment author not available">
-                    No author
+                    Anonymous
                 </span>
             </div>
         {% endif %}
@@ -58,69 +60,108 @@
     <p class="text-lg mt-2 px-2 break-words">
         {{ comment.body }}
     </p>
-    
+
+    <!-- Replies section -->
     <div x-data="{ repliesOpen: false }" class="flex items-center justify-between flex-wrap text-sm px-2">
-        <a @click="repliesOpen = !repliesOpen" class="font-bold hover:underline cursor-pointer">
-            <div class="inline-block" x-bind:class="repliesOpen && 'rotate-90 duration-300'">
-                <svg transform ="rotate(90)" width="9" height="9" viewBox="0 0 25 25">
-                    <path d="M24 22h-24l12-20z"/>
-                </svg>
-            </div>
-            {% if comment.replies.count %}
-            Replies
-            <span class="font-light text-gray-500 ml-1">{{ comment.replies.count }}</span>
+
+        <!-- Toggle Replies -->
+        <a @click="repliesOpen = !repliesOpen"
+        class="flex items-center font-bold hover:underline cursor-pointer gap-1"
+        role="button" aria-expanded="false" id="replies-toggle-{{ comment.id }}">
+            <svg :class="repliesOpen && 'rotate-90 transition-transform duration-300'"
+                class="w-3 h-3 transform"
+                viewBox="0 0 25 25" fill="currentColor" aria-hidden="true">
+                <path d="M24 22H0L12 2z"/>
+            </svg>
+            {% if comment.replies.exists %}
+                Replies
+                <span id="repliescount-{{ post.id }}" class="font-semibold" aria-label="Number of replies">
+                    {{ comment.replies.count }}
+                </span>
             {% else %}
-                {% if user.is_authenticated %}
-                    Add a reply
-                {% endif %}
+                Add a reply
             {% endif %}
         </a>
-        <div class="flex items-center gap-4 [&>a:hover]:underline">
-            <div class="flex items-center gap-1">
-                <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
-                1
-            </div>
-            <a href="">Like</a>
-            {% if user.is_authenticated and comment.author == user %}
-                <a href="{% url 'delete_comment' comment.pk %}" 
-                class="text-red-600 hover:text-red-800 text-sm font-medium transition-colors"
-                >
-                    Delete
+
+        <!-- Actions: Like / Delete -->
+        <div class="flex items-center gap-4">
+            {% include 'snippets/like_comment.html' %}
+            {% if user.is_authenticated and comment.author == user and comment.pk %}
+                <a href="{% url 'delete_comment' comment.pk %}"
+                class="text-red-600 hover:text-red-800 font-medium transition-colors">
+                    Delete comment
                 </a>
             {% endif %}
         </div>
 
-        <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 grid grid-cols-1">
+
+        <!-- Replies Section -->
+    <div x-show="repliesOpen" x-cloak class="basis-full mt-3 pl-8 space-y-4">
+        <!-- Replies list -->
+        <div id="replies-list-{{ comment.id }}" class="space-y-3">
             {% for reply in comment.replies.all %}
-                {% include 'a_posts/replies.html' %}
+                {% include 'a_posts/replies.html' with reply=reply %}
+            {% empty %}
+                <!-- This section shouldn't be displayed when there is a reply -->
+                {% if not comment.replies.exists %}
+                    <p id="no-reply-placeholder" class="text-gray-500 text-sm italic">No replies yet. Be the first to respond.</p>
+                {% endif %}
             {% endfor %}
-            
-            <!-- Reply form -->
-            <form method="post" class="flex items-center p-4 gap-2 w-full" autocomplete="off">
+        </div>
+        
+        <!-- Reply form -->
+        {% if user.is_authenticated %}
+            <form id="reply-form-{{ comment.id }}"
+                class="flex items-stretch gap-2 w-full"
+                autocomplete="off"
+                hx-post="{% url 'post_detail' post.pk %}"
+                hx-target="#replies-list-{{ comment.id }}"
+                hx-target-error="#reply-form-errors-{{ comment.id }}"
+                hx-swap="afterbegin"
+                hx-on::after-request="this.reset();
+                    const placeholder = document.getElementById('no-reply-placeholder');
+                    if (placeholder) placeholder.remove();">
+                
                 {% csrf_token %}
-                {{ reply_form.body.errors }}
-                <input 
-                    type="hidden" 
-                    name="form_type" 
-                    value="reply"
-                >
-                <input 
-                    type="hidden" 
-                    name="parent_comment_id" 
-                    value="{{ comment.pk }}"  
-                >
-                <input 
-                    type="text" 
-                    name="body" 
-                    placeholder="Add a reply..." 
-                    class="flex-1 bg-blue-100 text-lg p-2 rounded-md" 
-                    value="{{ reply_form.body.value|default:'' }}"
-                >
-                <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md">
+                <input type="hidden" name="form_type" value="reply">
+                <input type="hidden" name="parent_comment_id" value="{{ comment.pk }}">
+                
+                <textarea name="body"
+                        placeholder="Add a reply..."
+                        class="flex-1 bg-blue-100 dark:bg-gray-700 text-lg p-2 rounded-md border border-gray-300 dark:border-gray-600 resize-none"
+                        rows="1"
+                        required></textarea>
+                
+                <button type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold py-2 px-4 rounded-md shadow-md transition-colors">
                     Submit
                 </button>
             </form>
+   
+            
+            <!-- Error messages -->
+            <div id="reply-form-errors-{{ comment.id }}">
+                {% if reply_form.body.errors %}
+                    {% for error in reply_form.body.errors %}
+                        <div class="text-red-500 text-sm mt-1 bg-red-50 dark:bg-red-900/20 p-2 rounded">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        {% else %}
+            <div class="flex flex-col sm:flex-row items-center gap-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
+                <p class="md:mt-3">Please log in to add a reply.</p>
+                <a href="{% url 'account_login' %}?next={{ request.path|urlencode }}"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm">
+                    Log In to Reply
+                </a>
+            </div>
 
-        </div>
-    </div> 
+        {% endif %}
+    </div>
+    </div>
+
 </comment>
+</div>
+       

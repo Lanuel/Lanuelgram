@@ -1,0 +1,36 @@
+<!-- templates/snippets/add_reply.html -->
+
+<!-- Include the new reply -->
+{% include 'a_posts/replies.html' with reply=reply %}
+
+<!-- Update the replies count with out-of-band swap -->
+<span hx-swap-oob="true" id="repliescount-{{ post.id }}" class="font-semibold" aria-label="Number of replies">
+    {{ comment.replies.count }}
+</span>
+
+<!-- Clear the reply form with out-of-band swap -->
+<div hx-swap-oob="innerHTML:#reply-form-{{ comment.id }}">
+    <form class="flex items-center p-4 gap-2 w-full" 
+        autocomplete="off"
+        aria-label="Reply form"
+        hx-post="{% url 'post_detail' post.pk %}"
+        hx-target="#replies-list-{{ comment.id }}"
+        hx-target-error="#reply-form-errors-{{ comment.id }}"
+        hx-swap="afterbegin">
+        {% csrf_token %}
+        <input type="hidden" name="form_type" value="reply">
+        <input type="hidden" name="parent_comment_id" value="{{ comment.pk }}">
+        <input 
+            type="text" 
+            name="body" 
+            placeholder="Add a reply..." 
+            class="flex-1 bg-blue-100 text-lg p-2 rounded-md"
+        >
+        <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md">
+            Submit
+        </button>
+    </form>
+</div>
+
+<!-- Clear any error messages -->
+<div hx-swap-oob="innerHTML:#reply-form-errors-{{ comment.id }}"></div>

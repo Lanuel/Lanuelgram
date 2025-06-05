@@ -16,8 +16,9 @@
     </div>
     
     <nav x-show="mobilenavOpen" x-cloak class="md:!block">
-        <ul class="navitems flex items-center justify-center h-full hoverlist2 [&>li>a]:justify-end">
+        <ul class="navitems flex items-center justify-center h-full hoverlist [&>li>a]:justify-end">
             {% if request.user.is_authenticated %}
+            <li><a href="">Blog</a></li>
             <li><a href="{% url 'create_post' %}">Create Post</a></li>
             <li x-data="{ dropdownOpen: false }" class="relative">
                 <a @click="dropdownOpen = !dropdownOpen" 

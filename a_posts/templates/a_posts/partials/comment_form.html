@@ -1,0 +1,56 @@
+{% if user.is_authenticated %}
+<div class="card mb-8 -mt-3 rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
+    <form class="flex flex-col sm:flex-row items-center p-4 gap-2 w-full"
+          autocomplete="off"
+          aria-label="Comment form"
+          hx-post="{% url 'post_detail' post.pk %}"
+          hx-target="#comments-list .divide-y"
+          hx-target-error="#comment-form-errors"
+          hx-swap="afterbegin"
+          hx-on::after-request="if(event.detail.successful) {
+              this.reset();
+              document.getElementById('comment-form-errors').innerHTML = '';
+              const placeholder = document.getElementById('no-comments-placeholder');
+              if (placeholder) placeholder.remove();
+              const tabs = document.getElementById('tabs');
+              if (tabs) tabs.classList.remove('hidden');
+          }">
+          {% csrf_token %}
+        <input type="hidden" name="form_type" value="comment">
+        <label for="comment-body" class="sr-only">Add a comment</label>
+        <input type="text"
+               id="comment-body"
+               name="body"
+               placeholder="Add a comment..."
+               class="flex-1 bg-blue-100 text-lg p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600"
+               value="{{ form.body.value|default:'' }}"
+               required
+               maxlength="500">
+        <button type="submit"
+                class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600"
+                aria-label="Submit comment">
+            Submit
+        </button>
+    </form>
+
+    <div id="comment-form-errors">
+        {% if form.body.errors %}
+            {% include 'a_posts/partials/comment_form_errors.html' %}
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="bg-gray-50 rounded-xl p-4 text-center mb-6">
+    <div class="text-gray-400 mb-2">
+        <svg class="w-10 h-10 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+    </div>
+    <h2 class="text-xl font-semibold text-gray-900 mb-2">Join the Conversation</h2>
+    <p class="text-gray-600 mb-6">Please log in to leave a comment and engage with the community.</p>
+    <a href="{% url 'account_login' %}?next={{ request.get_full_path|urlencode }}"
+       class="inline-block bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200">
+        Log In to Comment
+    </a>
+</div>
+{% endif %}

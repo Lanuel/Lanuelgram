@@ -10,8 +10,8 @@
 <form method='POST'>
     {% csrf_token %}
     {{ form|crispy }}
+    <a class="button button-yellow ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
     <button type="submit" class="button-red mt-6">Deactivate</button>
-    <a class="button button-gray ml-1" href="{{ request.META.HTTP_REFERER }}">Cancel</a>
 </form>
 
 {% endblock %}

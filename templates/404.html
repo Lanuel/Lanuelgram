@@ -1,12 +1,209 @@
-{% extends 'layouts/box.html' %}
+{% extends 'layouts/box2.html' %}
 
 {% block content %}
 
-<div class="max-w-4xl mx-auto px-8 py-24 text-center">
-    <h1 class="text-6xl">Page not found</h1>
-    <p class="my-10 text-red-500">
-        Error 404: This page doesn't exist or is unavailable.
-    </p>
-</div>
+<style>
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .animate-bounce-slow {
+        animation: bounce-slow 2s infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+    @keyframes bounce-slow {
+        0%, 100% { 
+            transform: translateY(-5%);
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+        50% { 
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+    }
+    .gradient-text {
+        background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .glassmorphism {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .triangle {
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid #fdba74; /* matches bg-orange-300 */
+  background: none;
+}
+
+.star-full {
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 
+                     50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+</style>
+
+<section class="flex items-center justify-center p-4 mb-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Main 404 Error Card -->
+        <article class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white overflow-hidden">
+            <!-- Header Section -->
+            <div class="flex items-center justify-between px-4 h-14 bg-gradient-to-r from-indigo-400 to-red-600">
+                <h3 class="text-start leading-5 mr-1 text-red-500 font-medium">Error 404</h3>
+                <div class="text-sm text-white">
+                    <span class="animate-pulse-slow">⚠️ Page not found</span>
+                </div>
+            </div>
+
+            <!-- Image/Visual Section -->
+            <figure class="bg-gradient-to-br from-red-100 to-orange-100 h-64 flex items-center justify-center relative overflow-hidden">
+                <!-- Floating Elements -->
+                <div class="absolute inset-0 opacity-20">
+                    <div class="absolute top-4 left-4 w-8 h-8 bg-red-300 square-full animate-float"></div>
+                    <div class="absolute top-8 right-8 w-6 h-6 bg-orange-300 triangle animate-float" style="animation-delay: 0.5s;"></div>
+                    <div class="absolute bottom-8 left-8 w-10 h-10 bg-yellow-300 star-full animate-float" style="animation-delay: 1s;"></div>
+                    <div class="absolute bottom-4 right-4 w-6 h-6 bg-pink-300 rounded-full animate-float" style="animation-delay: 1.5s;"></div>
+                </div>
+                
+                <!-- Main Visual -->
+                <div class="text-center animate-bounce-slow">
+                    <div class="w-24 h-24 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-lg">
+                        <svg class="w-12 h-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <p class="text-red-600 font-medium">Lost in the digital void!</p>
+                </div>
+            </figure>
+
+            <!-- Content Section -->
+            <div class="p-4 pb-2">
+                <!-- Error Code Display -->
+                <div class="flex items-center justify-center mb-4">
+                    <div class="text-8xl font-bold text-gray-200 opacity-80">404</div>
+                </div>
+
+                <!-- Main Message -->
+                <h1 class="text-4xl mb-4 px-4 pb-2 font-lobster gradient-text text-center">
+                    Oops! This page took a wrong turn
+                </h1>
+
+                <!-- Error Description -->
+                <p class="text-center text-gray-600 mb-6 px-4">
+                    The page you're looking for seems to have wandered off into cyberspace. Don't worry, it happens to the best of us!
+                </p>
+
+                <!-- Interactive Elements -->
+                <div class="space-y-4 mb-6">
+                    <!-- Suggestion Pills -->
+                    <div class="flex flex-wrap gap-2 justify-center">
+                        <div class="glassmorphism rounded-full px-4 py-2 text-sm text-red-700 animate-pulse-slow">
+                            🏠 Go back home
+                        </div>
+                        <div class="glassmorphism rounded-full px-4 py-2 text-sm text-orange-700 animate-pulse-slow" style="animation-delay: 0.3s;">
+                            🔍 Search instead
+                        </div>
+                        <div class="glassmorphism rounded-full px-4 py-2 text-sm text-yellow-700 animate-pulse-slow" style="animation-delay: 0.6s;">
+                            📞 Contact support
+                        </div>
+                    </div>
+
+                    <!-- Call to Action Buttons -->
+                    <div class="flex gap-4 justify-center">
+                        <a onclick="window.history.back()" class="bg-gradient-to-r cursor-pointer from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            ← Go Back
+                        </a>
+                        <a onclick="window.location.href='/'" class="bg-gradient-to-r cursor-pointer from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white px-6 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg">
+                            🏠 Home Page
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bottom Action Bar -->
+                <div class="flex items-center justify-between text-sm px-2 pt-4 border-t border-gray-100">
+                    <!-- Mock Error Info -->
+                    <div class="text-gray-400 mb-3 gap-2 flex items-center">
+                        <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="italic">Error code: 404</span>
+                    </div>
+
+                    <!-- Help Link -->
+                    <div class="flex items-center mb-3 gap-4">
+                        <a href="/" class="flex items-center gap-1 text-gray-400 hover:text-red-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-sm">Need help?</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Additional Help Cards -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- What Happened Card -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <span class="text-2xl">🤔</span>
+                    What happened?
+                </h3>
+                <ul class="space-y-2 text-sm text-gray-600">
+                    <li class="flex items-start gap-2">
+                        <span class="text-red-500 mt-1">•</span>
+                        The page may have been moved or deleted
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-orange-500 mt-1">•</span>
+                        You might have typed the URL incorrectly
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-yellow-500 mt-1">•</span>
+                        The link you clicked might be broken
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Quick Links Card -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+                <h3 class="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <span class="text-2xl">🚀</span>
+                    Popular Pages
+                </h3>
+
+                <ul class="space-y-2">
+                    <li><a href="{% url 'home' %}" class="text-sm text-gray-600 hover:text-red-600 transition-colors">
+                        → <span class="hover:underline">Homepage</span>
+                    </a></li>
+                    <li><a href="{% url 'home' %}" class="text-sm text-gray-600 hover:text-orange-600 transition-colors">
+                        → <span class="hover:underline">About Us</span>
+                    </a></li>
+                    <li><a href="{% url 'home' %}" class="text-sm text-gray-600 hover:text-yellow-600 transition-colors">
+                        → <span class="hover:underline">Contact</span>
+                    </a></li>
+                    <li><a href="{% url 'home' %}" class="text-sm text-gray-600 hover:text-pink-600 transition-colors">
+                        → <span class="hover:underline">Help Center</span>
+                    </a></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

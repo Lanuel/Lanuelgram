@@ -11,11 +11,30 @@
 body {
     @apply bg-gray-900;
 }
+
+/* Hero section CSS */
 .bg-image {
   background-image: url("../images/bg_image.gif");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
+
+.title-fadein {
+    animation: fadeInUp 1.2s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .font-lobster {
   font-family: 'Lobster', sans-serif;
 }
@@ -56,20 +75,25 @@ p {
 .button-gray {
     @apply !bg-gray-300 hover:!bg-[#c3c9d0]
 }
+.button-yellow {
+    @apply !bg-amber-500 hover:!bg-amber-600
+}
+.cta-button {
+  @apply inline-block bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-black px-8 py-3 rounded-full font-medium transition-all duration-300 transform hover:scale-105 shadow-lg;
+}
+
 .navitems>li>a {
     @apply flex items-center gap-2 h-12 px-4 hover:bg-[rgba(31,41,55,0.3)] rounded-lg;
 }
 .hoverlist>* {
-    @apply hover:bg-gray-100 rounded-md transition duration-150;
+    @apply hover:bg-gray-600 rounded-md transition duration-150;
 }
-.hoverlist2>* {
-    @apply hover:bg-gray-700 rounded-md transition duration-150;
-}
+
 .hoverlist>*>a {
     @apply flex items-center p-2;
 }
 .highlight {
-    @apply !bg-indigo-100;
+    @apply bg-indigo-300;
 }
 /* .allauth a {
     @apply underline underline-offset-2;

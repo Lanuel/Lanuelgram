@@ -1,5 +1,5 @@
 {% load static %}
-<article class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white">
+<article class="card rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white mb-8">
     <div class="flex items-center justify-between px-4 h-14">
         <h3 class="text-start leading-5 mr-1">{{ post.title }}</h3>
         <div class="text-sm text-gray-400 truncate">flickr<a href="" class="hover:underline ml-1" target="blank">@{{ post.artist }}</a></div>
@@ -16,10 +16,10 @@
             <!-- <span class="text-sm text-gray-400">created {{ post.created|timesince }} ago.</span> -->
         </p>
         {% else %}
-        <div>
+        <p class="flex items-center gap-1 mb-4">
             <img class="w-8 h-8 object-cover rounded-full" src="{% static 'images/avatar.svg' %}" alt="Post author default avatar">
-            <span class="text-gray-500">no author</span>
-        </div>
+            <span class="text-gray-500">Anonymous</span>
+        </p>
         {% endif %}
         <h1 class="text-5xl mb-10 px-4 font-lobster">{{ post.body }}</h1>
         <div class="flex items-center gap-2 text-sm mb-5 flex-wrap">
@@ -28,23 +28,24 @@
             {% endfor %}
         </div>
         <div class="flex items-center justify-between text-sm px-2">
-
-                <a class="font-bold hover:underline" href="{% url 'post_detail' post.id %}">
-                {% if post.comments.count %}
-                    Comments
-                    <span class="font-light text-gray-500 ml-1">{{post.comments.count}}</span>
-                {% else %}
-                    {% if user.is_authenticated %}
+                <!-- Comments Count -->
+                <div class="text-black mb-3 gap-2 flex items-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a9.863 9.863 0 01-4.255-.949L5 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"></path>
+                    </svg>
+                    <a class="font-bold hover:underline" href="{% url 'post_detail' post.pk %}">
+                    {% if post.comments.count %}
+                        <span class="font-semibold" aria-label="Number of comments">{{ post.comments.count }} Comment{{ post.comments.count|pluralize }}</span>
+                    {% else %}
                         Add comment
                     {% endif %}
-                {% endif %}
-                </a>
-            <div class="flex items-center gap-4 [&>a:hover]:underline">
-                <div class="flex items-center gap-1">
-                    <img class="w-5 -mt-1" src="{% static 'images/fireheart_red.svg' %}">
-                    1
+                    </a>
                 </div>
-                <a href="">Like</a>
+            <div class="flex items-center gap-4 [&>a:hover]:underline">
+                <!-- Likes and unlike -->
+                {% include 'snippets/like_post.html' %}
+
+                <!-- Edit and delete post -->
                 {% if user.is_authenticated and post.author == user %}
                     <a href="{% url 'edit_post' post.pk %}">Edit</a>
                     <a href="{% url 'delete_post' post.pk %}" 

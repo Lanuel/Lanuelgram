@@ -3,10 +3,9 @@
 {% block content %} 
 
 {% for post in post_list %}
-    {% include 'layouts/post_article.html' %}
-<br>
+    {% include 'includes/post_article.html' %}
 {% empty %}
-    <h2>No posts available yet.</h2>
+    {% include 'includes/post_empty_state.html' %}
 {% endfor %}
 
 {% endblock %}

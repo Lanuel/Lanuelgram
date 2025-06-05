@@ -1,0 +1,21 @@
+<!-- snippets/replies_toggle.html -->
+<a @click="repliesOpen = !repliesOpen"
+   class="flex items-center font-bold hover:underline cursor-pointer gap-1"
+   role="button" 
+   aria-expanded="false"
+   id="replies-toggle-{{ comment.id }}"
+   hx-swap-oob="true">
+    <svg :class="repliesOpen && 'rotate-90 transition-transform duration-300'"
+        class="w-3 h-3 transform"
+        viewBox="0 0 25 25" fill="currentColor" aria-hidden="true">
+        <path d="M24 22H0L12 2z"/>
+    </svg>
+    {% if comment.replies.exists %}
+        Replies
+        <span class="font-semibold" aria-label="Number of replies">
+            {{ comment.replies.count }}
+        </span>
+    {% else %}
+        Add a reply
+    {% endif %}
+</a>
