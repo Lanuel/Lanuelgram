@@ -6,4 +6,6 @@ db.sqlite3
 .env
 /staticfiles/
 static/images/ape1.jpg
-static/images/ape1.jpg
+static/images/ape2.jpg
+static/js/exercise.js
+static/favicon.png
