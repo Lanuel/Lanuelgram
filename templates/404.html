@@ -2,60 +2,6 @@
 
 {% block content %}
 
-<style>
-    .animate-float {
-        animation: float 3s ease-in-out infinite;
-    }
-    .animate-pulse-slow {
-        animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-    .animate-bounce-slow {
-        animation: bounce-slow 2s infinite;
-    }
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-10px); }
-    }
-    @keyframes pulse-slow {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.3; }
-    }
-    @keyframes bounce-slow {
-        0%, 100% { 
-            transform: translateY(-5%);
-            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
-        }
-        50% { 
-            transform: translateY(0);
-            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
-        }
-    }
-    .gradient-text {
-        background: linear-gradient(45deg, #6366f1, #8b5cf6, #ec4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    .glassmorphism {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-    .triangle {
-  width: 0;
-  height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-bottom: 20px solid #fdba74; /* matches bg-orange-300 */
-  background: none;
-}
-
-.star-full {
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 
-                     50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-</style>
-
 <section class="flex items-center justify-center p-4 mb-8">
     <div class="max-w-2xl mx-auto">
         <!-- Main 404 Error Card -->
