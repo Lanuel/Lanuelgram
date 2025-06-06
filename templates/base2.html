@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Django Template">
     <title>Lanuelgram</title>
-    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.svg' %}">
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <script src="https://unpkg.com/htmx.org@2.0.2"></script>
     {% django_htmx_script %}
@@ -19,10 +19,9 @@
     <link rel="stylesheet" href="{% static 'css/style.css' if debug else 'css/style.min.css' %}">
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="{% block class %}{% endblock %}">
-	
-    {% include 'includes/messages.html' %}
 
     {% include 'includes/header.html' %}
+    {% include 'includes/messages.html' %}
     {% include 'includes/hero.html' %}
 
     {% block layout %}

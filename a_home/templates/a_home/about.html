@@ -1,75 +1,29 @@
 {% extends 'layouts/about_blank.html' %}
-
+{% load static %}
 {% block content %}
 
+<link rel="stylesheet" href="{% static 'css/aboutCSS.css' %}">
 
-<body class="bg-gray-50 text-gray-800 font-sans">
-  <div class="max-w-4xl mx-auto px-4 py-12">
-    <h1 class="text-4xl font-bold text-center mb-4">About <span class="text-blue-600">Lanuelgram</span></h1>
-    <p class="text-center text-lg text-gray-600 mb-10">Capturing the World, One Photo & Caption at a Time</p>
+<section class="body-section rounded-2xl">
 
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">Why Lanuelgram Exists</h2>
-      <p class="text-gray-700">In a world flooded with pictures, we slow things down. We highlight <strong>quality over quantity</strong>, putting the spotlight on:</p>
-      <ul class="list-disc list-inside mt-2 text-gray-700">
-        <li>Photography with soul</li>
-        <li>Captions that stick with you</li>
-        <li>Creators who love both light and language</li>
-      </ul>
+    {% include 'a_home/partials/about_hero.html' %}
+
+    {% include 'a_home/partials/about_vision.html' %}
+
+    <!-- Creator Section -->
+    {% include 'a_home/partials/about_creator.html' %}
+
+    <section class="cta-section">
+        <div class="container">
+            <h2 style="margin-bottom: 20px; font-size: 2.5rem;">Ready to Start Your Story?</h2>
+            <p style="margin-bottom: 40px; font-size: 1.2rem; color: rgba(255, 255, 255, 0.9);">Join thousands of storytellers who are already creating magic with Lanuelgram</p>
+            <a href="{% url 'home' %}" class="cta-button animate-pulse">Explore Gallery</a>
+        </div>
     </section>
 
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">What Makes Lanuelgram Different?</h2>
-      <ul class="list-disc list-inside text-gray-700">
-        <li>Minimalist, distraction-free design</li>
-        <li>Focus on storytelling & human connection</li>
-        <li>Tag your moments — explore by mood, moment, or meaning</li>
-        <li>Built with modern tools (Tailwind CSS, Django, SVG icons — sleek & fast)</li>
-      </ul>
-    </section>
-
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">Behind the Lens: Who Built This?</h2>
-      <p class="text-gray-700">Hi, I’m <strong>Lanuel</strong>, the mind behind Lanuelgram.</p>
-      <blockquote class="border-l-4 border-blue-600 pl-4 italic text-gray-600 mt-2">
-        "Lanuelgram is my way of helping people freeze time, give it meaning, and share it with the world."
-      </blockquote>
-    </section>
-
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">Join the Movement</h2>
-      <ul class="list-disc list-inside text-gray-700">
-        <li>Share your favorite Flickr images (with credit)</li>
-        <li>Add captions that matter — funny, poetic, thoughtful, nostalgic</li>
-        <li>Explore a stream of visual thoughts from other creatives</li>
-        <li>Like, comment, or remix a caption in your own way</li>
-      </ul>
-    </section>
-
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">Let’s Stay Connected</h2>
-      <p class="text-gray-700">Want to say hi, collaborate, or give feedback? Drop a line at <a href="mailto:you@example.com" class="text-blue-600 hover:underline">you@example.com</a></p>
-      <div class="flex space-x-4 mt-2">
-        <a href="#" class="text-blue-600 hover:underline">Instagram</a>
-        <a href="#" class="text-blue-600 hover:underline">GitHub</a>
-        <a href="#" class="text-blue-600 hover:underline">LinkedIn</a>
-      </div>
-    </section>
-
-    <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-2">Future Features Coming Soon</h2>
-      <ul class="list-disc list-inside text-gray-700">
-        <li>Personal caption libraries</li>
-        <li>Themed photo challenges</li>
-        <li>Caption leaderboard (because words matter!)</li>
-        <li>Downloadable caption cards</li>
-      </ul>
-    </section>
-
+    {% include 'includes/nav_top.html' %}
     
-  </div>
-</body>
-
-
+    <script src="{% static 'js/about.js' %}"></script>
+</section>
 
 {% endblock %}

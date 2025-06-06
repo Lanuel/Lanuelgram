@@ -1,13 +1,17 @@
+{% load static %}
+
 <hero class="relative grid text-white text-center z-10 overflow-hidden bg-image">
   <div class="col-start-1 row-start-1 py-24 px-10 z-10 backdrop-brightness-[.9]">
-    <h4 class="text-red-500 font-lobster text-6xl title-fadein">
+    <h4 class="text-red-500 font-lobster text-6xl mb-2 title-fadein">
       Awesome Photos & Captions
     </h4>
-    <p class="text-3xl font-semibold mb-5">
-      Share your favorite Photos from Flickr and add a great caption
+    <p class="hero__text">Capturing the World, One Photo & Caption at a Time</p>
+    <p class="text-xl font-light italic mb-5">
+      Share your favorite Photos from Flickr and add a great caption.
     </p>
     {% if not user.is_authenticated %}
-      <a class="button" href="{% url 'account_signup' %}">Get Started</a>
+      <a class="cta-button animate-pulse" href="{% url 'account_signup' %}">Get Started</a>
     {% endif %}
   </div>
 </hero>
+
