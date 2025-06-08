@@ -64,11 +64,11 @@
                 <!-- Call to Action -->
                 <div class="text-center">
                     {% if user.is_authenticated %}
-                        <a href="{% url 'create_post' %}" class="cta-button">
+                        <a href="{% url 'create_post' %}" class="cta-button button-dark-single">
                             Create Your First Post
                         </a>
                     {% else %}
-                        <a href="{% url 'account_signup' %}" class="cta-button">
+                        <a href="{% url 'account_signup' %}" class="cta-button button-dark-single">
                             Create Your First Post
                         </a>
                     {% endif %}
