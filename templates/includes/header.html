@@ -1,3 +1,5 @@
+{% load static %}
+
 <header class="header" x-data="{ mobileOpen: false, isAuthenticated: true }">
   <nav class="nav">
     <div class="logo">
@@ -50,7 +52,7 @@
             src="{{ request.user.profile.avatar }}"
             alt="Avatar"
           />
-          <span class="username">{{ request.user.profile.name|title }}</span>
+          <span class="fullname">{{ request.user.profile.name|title }}</span>
           <svg
             class="arrow"
             :class="{ rotated: open }"

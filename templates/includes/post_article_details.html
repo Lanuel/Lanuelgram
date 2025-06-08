@@ -1,26 +1,26 @@
 {% load static %}
 <article class="card mb-8 rounded-2xl md:drop-shadow-2xl shadow-black w-full bg-white" aria-labelledby="post-title-{{ post.id }}">
     <div class="flex flex-col md:flex-row items-center justify-between px-4 py-3">
-        <h3 id="post-title-{{ post.id }}" class="text-lg font-bold md:w-1/2 truncate">{{ post.title|default:"Untitled Post" }}</h3>
+        <h3 id="post-title-{{ post.id }}" class="text-lg font-bold md:w-1/2">{{ post.title|default:"Untitled Post" }}</h3>
         <div class="text-sm text-gray-500">
             flickr @ <a href="{{ post.url|default:'#' }}" class="hover:underline" target="_blank" rel="noopener noreferrer">{{ post.artist|default:"Unknown Artist" }}</a>
         </div>
     </div>
 
-    <figure class="relative">
-        <img class="w-full h-auto object-cover" src="{{ post.image|default:'/static/images/placeholder.jpg' }}" alt="{{ post.title|default:'Post image' }}" loading="lazy" decoding="async">
+    <figure class="relative overflow-hidden">
+        <img class="w-full h-auto object-cover brightness-110 contrast-110 saturate-125 transform hover:scale-[105%] transition duration-700 hover:brightness-125" src="{{ post.image|default:'/static/images/placeholder.jpg' }}" alt="{{ post.title|default:'Post image' }}" loading="lazy" decoding="async">
     </figure>
 
     <div class="p-6">
         {% if post.author %}
             <div class="flex items-center gap-3 mb-6">
                 <a href="{% url 'userprofile' post.author.username %}" class="shrink-0" aria-label="View {{ post.author.profile.name|default:'User' }}'s profile">
-                    <img class="w-8 h-8 object-cover rounded-full" src="{{ post.author.profile.avatar|default:'/static/images/avatar.svg' }}" alt="{{ post.author.profile.name|default:'User' }}'s avatar" loading="lazy" decoding="async">
+                    <img class="w-8 h-8 object-cover rounded-full" src="{{ post.author.profile.image.url|default:'/static/images/avatar.svg' }}" alt="{{ post.author.profile.name|default:'User' }}'s avatar" loading="lazy" decoding="async">
                 </a>
                 <div class="flex flex-col min-w-0">
                     <div class="flex flex-wrap items-center gap-2">
-                        <a href="{% url 'userprofile' post.author.username %}" class="font-semibold text-gray-800 hover:underline truncate">{{ post.author.profile.name|default:"Anonymous" }}</a>
-                        <a href="{% url 'userprofile' post.author.username %}" class="text-sm text-gray-500 hover:underline truncate">@{{ post.author.username }}</a>
+                        <a href="{% url 'userprofile' post.author.username %}" class="font-semibold text-gray-800 hover:underline truncate">{{ post.author.profile.name|title|default:"Anonymous" }}</a>
+                        <a href="{% url 'userprofile' post.author.username %}" class="text-sm text-gray-500 hover:underline truncate">@{{ post.author.username|title }}</a>
                     </div>
                     <time datetime="{{ post.created|date:'c' }}" class="text-sm text-gray-400">
                         • {{ post.created|date:"M j, Y, g:i A" }}
@@ -34,7 +34,7 @@
             </div>
         {% endif %}
 
-        <div class="text-2xl sm:text-3xl lg:text-5xl mb-10 px-2 font-lobster" aria-label="Post content">{{ post.body|default:"No content available" }}</div>
+        <div class="text-2xl sm:text-3xl lg:text-5xl text-slate-700 mb-10 px-2 font-lobster" aria-label="Post content">{{ post.body|default:"No content available" }}</div>
 
         <!-- Tags -->
         {% if post.tags.all.exists %}

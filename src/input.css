@@ -43,6 +43,15 @@ p {
   @apply mb-4;
 }
 
+/* === Image visual quality === */
+img {
+  filter: contrast(1.2) brightness(1.25) saturate(1.35);
+}
+
+img:hover {
+  filter: contrast(1.2) brightness(1.25) saturate(1.35);
+}
+
 /* === Button Styles === */
 .button,
 button,
@@ -129,7 +138,7 @@ button.alert:hover {
 
 /* === Hero Section === */
 .bg-image {
-  background-image: url("../images/bg_image.gif");
+  background-image: url("../images/bg_image2.gif");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -248,7 +257,7 @@ button.alert:hover {
   border-color: rgba(255, 216, 155, 0.5);
 }
 
-.username {
+.fullname {
   @apply font-semibold text-white/90 text-sm;
 }
 
@@ -400,13 +409,13 @@ a[href*="password/reset"] {
 /* Navigation to Top Button Styles */
 #nav-top {
   position: fixed;
-  right: 20px;
+  right: 12px;
   bottom: 20px;
   z-index: 1000;
 }
 
 #nav-top .button-dark {
-  padding: 12px 20px;
+  padding: 12px 10px;
   color: #000;
   border: 1px solid #d1d5db;
   border-radius: 6px;
@@ -803,3 +812,117 @@ html {
     39% 35%
   );
 }
+
+/* === Post tag === */
+.tag-pill {
+  user-select: none;
+}
+
+/* === High contrast mode support === */
+@media (prefers-contrast: high) {
+  .bg-gradient-to-br {
+    background: white;
+    border: 2px solid black;
+  }
+
+  .text-transparent {
+    color: black !important;
+    background: none !important;
+  }
+}
+
+/* === Reduced motion support === */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* === Dark mode preparation === */
+/* @media (prefers-color-scheme: dark) {
+    .bg-white {
+        background: rgb(17 24 39);
+        color: white;
+    }
+    
+    .border-gray-100\/50 {
+        border-color: rgb(55 65 81 / 0.5);
+    }
+} */
+
+/* === Footer === */
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.social-link::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transition: all 0.4s ease;
+  transform: translate(-50%, -50%);
+}
+
+.social-link:hover {
+  color: rgb(66, 81, 219);
+  transform: translateY(-8px) scale(1.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.social-link:hover::before {
+  width: 100%;
+  height: 100%;
+}
+
+.social-link svg {
+  width: 28px;
+  height: 28px;
+  position: relative;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.social-link:hover svg {
+  transform: scale(1.1);
+}
+
+/* Focus styles for accessibility */
+.social-link:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
+  outline-offset: 2px;
+}
+
+/* Ensure the hero element has a defined position for smooth transitions */
+  hero {
+    display: block;
+    transition: opacity 0.3s ease;
+  }

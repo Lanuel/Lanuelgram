@@ -70,11 +70,9 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         post = form.save(commit=False)
-        # post.user = self.request.user  # Set owner if applicable
 
         url = form.cleaned_data.get('url', '')
 
-        # Optional: Only allow Flickr URLs
         if not url.startswith("https://www.flickr.com"):
             messages.error(self.request, "Invalid URL. Please enter a valid Flickr link.")
             return self.form_invalid(form)
@@ -83,22 +81,18 @@ class PostCreateView(LoginRequiredMixin, CreateView):
             response = requests.get(url)
             sourcecode = BeautifulSoup(response.text, 'html.parser')
 
-            # Extract image
             image_meta = sourcecode.find('meta', content=lambda c: c and "https://live.staticflickr.com/" in c)
             if image_meta:
                 post.image = image_meta['content']
 
-            # Extract title
             title_tag = sourcecode.select_one('h1.photo-title')
             if title_tag:
                 post.title = title_tag.get_text(strip=True)
 
-            # Extract artist
             artist_tag = sourcecode.select_one('a.owner-name')
             if artist_tag:
                 post.artist = artist_tag.get_text(strip=True)
 
-            # Provide fallback values (optional)
             post.title = post.title or "Untitled"
             post.artist = post.artist or "Unknown"
 
@@ -106,11 +100,14 @@ class PostCreateView(LoginRequiredMixin, CreateView):
             logger.error("Error scraping Flickr: %s", e)
             messages.warning(self.request, "We couldn't fetch all post details, but your post will still be saved.")
 
+        post.author = self.request.user
         post.save()
         form.instance = post
         form.save_m2m()
+
         messages.success(self.request, 'Your post has been created successfully.')
-        return super().form_valid(form)
+        return redirect(self.success_url)
+
 
 
 class PostUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
