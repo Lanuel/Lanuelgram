@@ -16,10 +16,10 @@ class ProfileReactivationError(Exception):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = CloudinaryField('avatar', folder="Lanuelgram/", null=True, blank=True)
-    displayname = models.CharField(max_length=20, null=True, blank=True)
+    displayname = models.CharField(max_length=30, null=True, blank=True)
     info = models.TextField(null=True, blank=True) 
     email = models.EmailField(null=True)
-    location = models.CharField(max_length=20, null=True, blank=True)
+    location = models.CharField(max_length=40, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True,null=True)
     deactivated_at = models.DateTimeField(null=True, blank=True)
     

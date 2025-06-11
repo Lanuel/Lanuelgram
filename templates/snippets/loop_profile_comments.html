@@ -1,5 +1,7 @@
 <div class="opacity-0" _="on load transition my opacity to 1 over 0.4 seconds">
-    <div class="w-full lg:w-[50rem] mx-auto">
+    <div
+    class="grid place-items-start gap-x-8 mx-auto max-w-xl {% if posts.count == 2 %} lg:grid-cols-2 lg:max-w-5xl {% elif posts.count > 2 %} lg:grid-cols-2 lg:max-w-5xl xl:grid-cols-3 xl:max-w-7xl {% endif %}"
+  >
         {% if comments %}
             {% for comment in comments %}
                 <div class="flex gap-2">

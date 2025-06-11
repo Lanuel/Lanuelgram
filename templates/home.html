@@ -12,12 +12,12 @@
     <div hx-get="{% url 'home' %}?page={{ page_obj.next_page_number }}"
          hx-trigger="revealed"
          hx-target="this"
-         hx-swap="outerHTML">
-        Loading...
+         hx-swap="outerHTML"
+         class="loading-container">
+         <div class="rolling-circle"></div>
     </div>
 {% endif %}
 
 {% include 'includes/nav_top.html' %}
 
 {% endblock %}
-
