@@ -25,7 +25,7 @@
             remove .shadow-md from .tab
             remove .ring-2 from .tab
             remove .ring-red-500 from .tab
-            then add .bg-gray-100 to .tab
+            then add .bg-gray-400 to .tab
             then add .text-gray-900 to .tab
             then add .selected to event.target
             then add .bg-red-300 to event.target
@@ -36,7 +36,7 @@
     ">
     
     <!-- Newest First -->
-    <a class="tab selected bg-red-300 text-white shadow-md ring-2 ring-red-500 rounded-lg border border-gray-700 transition-colors duration-300 px-4 py-2 text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+    <a  class="tab selected bg-red-300 text-white shadow-md ring-2 ring-red-500 rounded-lg border border-gray-700 transition-colors duration-300 px-4 py-2 text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
         href="{% url 'post_detail' post.id %}"
         hx-get="{% url 'post_detail' post.id %}"
         role="tab"
@@ -45,7 +45,7 @@
         Newest First
     </a>
     <!-- Top Comments -->
-    <a class="tab bg-gray-400 text-black rounded-lg border border-gray-700 transition-colors duration-300 px-4 py-2 text-sm font-medium hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
+    <a  class="tab bg-gray-400 text-black rounded-lg border border-gray-700 transition-colors duration-300 px-4 py-2 text-sm font-medium hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500"
         href="{% url 'post_detail' post.id %}?top=1"
         hx-get="{% url 'post_detail' post.id %}?top=1"
         role="tab"

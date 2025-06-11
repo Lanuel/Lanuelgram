@@ -11,34 +11,44 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+import dj_database_url
 from environ import Env
+
 env = Env()
 env.read_env()
-ENVIRONMENT = env('ENVIRONMENT')
 
+ENVIRONMENT = env('ENVIRONMENT', default='production')
+USE_CLOUDINARY = env.bool('USE_CLOUDINARY', default=False)
+
+# Validate required environment variables
+required_env_vars = ['SECRET_KEY']
+if ENVIRONMENT == 'production':
+    required_env_vars.extend(['DATABASE_URL'])
+if USE_CLOUDINARY:
+    required_env_vars.append('CLOUDINARY_URL')
+
+for var in required_env_vars:
+    if not env(var, default=None):
+        raise ValueError(f"Environment variable {var} is required but not set.")
+    
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'SECRET_KEY'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if ENVIRONMENT == 'development':
-    DEBUG = True
-else:
-    DEBUG =False
+DEBUG = ENVIRONMENT == 'development'
     
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '*']
-
-INTERNAL_IPS = ['localhost:8000', '127.0.0.1',]
-
-CSRF_TRUSTED_ORIGINS = [ 'https://*' ]
-
+# Hosts configuration
+if ENVIRONMENT == 'production':
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
+else:
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['localhost', '127.0.0.1'])
+    INTERNAL_IPS = ['localhost', '127.0.0.1']
 
 # Application definition
 
@@ -50,6 +60,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 3rd party apps
+    'cloudinary_storage',
+    'cloudinary',
     'django_cleanup.apps.CleanupConfig',
     'django_htmx',
     'django.contrib.sites',
@@ -58,6 +70,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'crispy_forms',
     'crispy_bootstrap5',
+    'csp',
 
     # social
     'allauth.socialaccount.providers.apple',
@@ -152,6 +165,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'csp.middleware.CSPMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django_htmx.middleware.HtmxMiddleware',
 ]
@@ -181,7 +195,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'a_core.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -192,7 +205,14 @@ DATABASES = {
     }
 }
 
-
+# Use PostgreSQL in production or when explicitly set for local development
+if ENVIRONMENT == 'production':
+    DATABASE_URL = env('DATABASE_URL', default=None)
+    if DATABASE_URL:
+        DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+    else:
+        raise ValueError("DATABASE_URL not found in environment for production.")
+    
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -211,6 +231,22 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Production security settings
+if ENVIRONMENT == 'production':
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 0  # 1 hour
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+    SESSION_COOKIE_AGE = 1209600
+    SESSION_COOKIE_SAMESITE = 'Strict'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    CSRF_TRUSTED_ORIGINS = ['https://lanuelgram.onrender.com', 'https://www.lanuelgram.onrender.com']
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -223,7 +259,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
@@ -231,24 +266,52 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media' 
+if USE_CLOUDINARY:
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+    CLOUDINARY_STORAGE = {
+        'CLOUDINARY_URL': env('CLOUDINARY_URL'),
+        'OPTIONS': {
+        'secure': True,  
+    },
+    }
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_REDIRECT = 'home'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = 'smtp.sendgrid.net'  
+EMAIL_PORT = 465 
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True 
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='apikey')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 't.osunlalu@icloud.com'
+EMAIL_TIMEOUT = 60
+EMAIL_USE_LOCALTIME = True
+
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_SIGNUP_FIELDS = ['first_name', 'last_name', 'username', 'email*', 'password1*', 'password2*']
 
 SOCIALACCOUNT_LOGIN_ON_GET = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_UNIQUE_EMAIL = True
-SOCAILACCOUNT_EMAIL_AUTHENTICATION = True
-SOCAILACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
-SOCAILACCOUNT_EMAIL_VERIFICATION = "none"
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+SOCIALACCOUNT_EMAIL_VERIFICATION = "mandatory"
 
 ACCOUNT_ADAPTER = "a_users.adapters.CustomAccountAdapter"
 SOCIALACCOUNT_ADAPTER = "a_users.adapters.SocialAccountAdapter"
@@ -257,3 +320,42 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ACCOUNT_USERNAME_BLACKLIST = ["profile", "admin", "username", "pussy", "fuck", "jesus", 'accounts', "post", "category"]
+
+# Logging
+LOGS_DIR = BASE_DIR / 'logs'
+LOGS_DIR.mkdir(exist_ok=True)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{asctime}] {levelname} {name}: {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': LOGS_DIR / 'error.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

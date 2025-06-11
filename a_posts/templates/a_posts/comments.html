@@ -114,10 +114,10 @@
             <form id="reply-form-{{ comment.id }}"
                 class="flex items-stretch gap-2 w-full"
                 autocomplete="off"
-                hx-post="{% url 'post_detail' post.pk %}"
+                hx-post="{% url 'post_detail' comment.parent_post.pk %}"
                 hx-target="#replies-list-{{ comment.id }}"
                 hx-target-error="#reply-form-errors-{{ comment.id }}"
-                hx-swap="afterbegin"
+                hx-swap="beforeend"
                 hx-on::after-request="this.reset();
                     const placeholder = document.getElementById('no-reply-placeholder');
                     if (placeholder) placeholder.remove();">

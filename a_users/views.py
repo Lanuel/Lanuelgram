@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import logout, login
 from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 from django.contrib import messages
 from django.core.mail import send_mail
 from allauth.account.utils import send_email_confirmation
@@ -32,7 +33,28 @@ def profile_view(request, username=None):
             profile = request.user.profile
         except:
             return redirect_to_login(request.get_full_path())
-    return render(request, 'a_users/profile.html', {'profile':profile})
+        
+    posts = profile.user.posts.all()
+    
+    if request.htmx:
+        if "top-posts" in request.GET:
+            posts = profile.user.posts.annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by("-num_likes")
+
+        elif "top-comments" in request.GET:
+            comments = profile.user.comments.select_related('parent_post').annotate(num_likes=Count('likes')).filter(num_likes__gt=0).order_by("-num_likes")
+            return render(request, "snippets/loop_profile_comments.html", {"comments": comments})
+
+        elif "liked-posts" in request.GET:
+            posts = profile.user.likedposts.order_by("-likedpost__created")
+        
+        return render(request, "snippets/loop_profile_posts.html", {"posts": posts})
+        
+    context = {
+        'profile':profile,
+        'posts':posts,
+    }
+        
+    return render(request, 'a_users/profile.html', context)
 
 
 @login_required

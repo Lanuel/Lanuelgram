@@ -1,11 +1,6 @@
-{% extends 'layouts/blank.html' %}
-{% load static %}
-{% block content %} 
-
+<div class="opacity-0" _="on load transition my opacity to 1 over 0.4 seconds">
 {% for post in post_list %}
     {% include 'includes/post_article.html' %}
-{% empty %}
-    {% include 'includes/post_empty_state.html' %}
 {% endfor %}
 
 {% if page_obj.has_next %}
@@ -13,11 +8,7 @@
          hx-trigger="revealed"
          hx-target="this"
          hx-swap="outerHTML">
-        Loading...
     </div>
 {% endif %}
 
-{% include 'includes/nav_top.html' %}
-
-{% endblock %}
-
+</div>

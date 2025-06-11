@@ -84,13 +84,16 @@ class Reply(models.Model):
     likes = models.ManyToManyField(User, related_name="likedreplies", through="LikedReply")
     parent_comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True, related_name="replies")
     created = models.DateTimeField(auto_now_add=True)
-    id = models.CharField(max_length=100, default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
     def __str__(self):
         try:
             return f'{self.author.username} : "{self.body[:30]}"'
         except:
             return f'no author : "{self.body[:30]}"'
+
+    class Meta:
+        ordering = ("created",)
 
 
 class LikedReply(models.Model):

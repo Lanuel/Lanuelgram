@@ -976,3 +976,24 @@ hero {
   display: block;
   transition: opacity 0.3s ease;
 }
+
+/* Custom CSS for text truncation */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+
+    line-clamp: 2;              /* Standard property */
+    box-orient: vertical;       /* Standard fallback (not widely supported yet) */
+
+    overflow: hidden;
+}
+
+/* If not using the Tailwind plugin for hiding scrollbars */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}

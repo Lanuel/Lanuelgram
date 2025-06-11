@@ -10,6 +10,7 @@ from django.views.generic.edit import FormMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.http import url_has_allowed_host_and_scheme
 from .forms import PostCreationForm, PostEditForm, CommentCreateForm, ReplyCreateForm
+from django.core.paginator import Paginator
 from .models import *
 from django.urls import reverse_lazy
 from django.template.loader import render_to_string
@@ -31,7 +32,7 @@ class TagFilterMixin:
         if tag_slug:
             return Post.objects.filter(tags__slug=tag_slug)
         return Post.objects.all()
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['current_tag_slug'] = self.kwargs.get('tags')
@@ -45,6 +46,7 @@ class HomePageView(TagFilterMixin, ListView):
     model = Post
     template_name = "home.html"
     context_object_name = "post_list"
+    paginate_by = 3
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -54,13 +56,11 @@ class HomePageView(TagFilterMixin, ListView):
                 post.user_liked = post.likes.filter(id=user_id).exists()
         return queryset
     
-# def home_page_view(request, tags=None):
-#     if tags:
-#         posts = Post.objects.filter(tags__slug=tags)
-#     else:
-#         posts = Post.objects.all()
-    
-#     return render(request, 'home.html', {'posts': posts})
+    def render_to_response(self, context, **response_kwargs):
+        # HTMX check
+        if self.request.headers.get("HX-Request") == "true":
+            return render(self.request, "snippets/loop_home_posts.html", context)
+        return super().render_to_response(context, **response_kwargs)
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):

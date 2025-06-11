@@ -1,5 +1,5 @@
 {% extends 'layouts/blank2.html' %}
-
+{% load static %}
 {% block content %}
 
 <div id="profile" class="flex flex-col items-center py-4">
@@ -14,7 +14,7 @@
                     {% else %}
                         <h1>{{profile.user.username|title}}</h1>
                     {% endif %}
-                    <div class="text-gray-400 mb-2 -mt-3">@{{profile.user.username}}</div>
+                    <div class="text-gray-600 mb-2 -mt-3">@{{profile.user.username}}</div>
                     <div class="flex items-center justify-center mx-auto text-green-600">
                         <img class="object-cover h-6 mr-1 opacity-60" src="https://img.icons8.com/material-outlined/50/000000/marker.png"> 
                         {% if profile.location %}
@@ -38,119 +38,74 @@
     </div>
 
     <!-- Tabs -->
-    <div id="tabs" class="flex justify-center my-4 gap-2 mb-6" > 
-        <a class="tab selected bg-red-300 border border-gray-700 hover:bg-gray-700 shadow-md rounded-xl px-3 py-1 ring-2 ring-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-300">Latest</a>
-        <a class="tab bg-gray-400 rounded-xl px-3 py-1 hover:bg-gray-800 hover:text-white cursor-pointer">Top Posts</a>  
-        <a class="tab bg-gray-400 rounded-xl px-3 py-1 hover:bg-gray-800 hover:text-white cursor-pointer">Top Comments</a>
-        <a class="tab bg-gray-400 rounded-xl px-3 py-1 hover:bg-gray-800 hover:text-white cursor-pointer">Liked Posts</a>
+    <div id="tabs" role="tablist" 
+        class="{% if not posts.exists %}hidden {% endif %}flex flex-wrap justify-center gap-2 px-4 p-2 mb-6 sm:flex-nowrap sm:overflow-x-auto sm:scrollbar-hide" 
+        hx-target="#tab-contents" 
+        hx-swap="innerHTML"
+        _="
+        on htmx:afterOnLoad 
+            remove .selected from .tab
+            remove .bg-red-300 from .tab
+            remove .text-white from .tab
+            remove .text-gray-900 from .tab
+            remove .shadow-md from .tab
+            remove .ring-2 from .tab
+            remove .ring-red-500 from .tab
+            then add .bg-gray-400 to .tab
+            then add .text-gray-900 to .tab
+            then add .selected to event.target
+            then add .bg-red-300 to event.target
+            then add .text-white to event.target
+            then add .shadow-md to event.target
+            then add .ring-2 to event.target
+            then add .ring-red-500 to event.target
+    ">
+        <a  href="{% url 'userprofile' profile.user.username %}" 
+            hx-get="{% url 'userprofile' profile.user.username %}" 
+            class="tab selected bg-red-300 text-white shadow-md ring-2 ring-red-500 rounded-lg border border-gray-700 transition-colors duration-300 px-4 py-2 text-sm font-medium hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500" 
+            aria-selected="true"
+            aria-controls="latest-posts">
+            Latest
+        </a>
+        <a  href="{% url 'userprofile' profile.user.username %}?top-posts" 
+            hx-get="{% url 'userprofile' profile.user.username %}?top-posts" 
+            class="tab bg-gray-400 rounded-xl px-4 py-2 text-sm hover:bg-gray-800 hover:text-white cursor-pointer whitespace-nowrap" 
+            aria-selected="false"
+            aria-controls="top-comments">
+            Top Posts
+        </a>
+        <a  href="{% url 'userprofile' profile.user.username %}?top-comments" 
+            hx-get="{% url 'userprofile' profile.user.username %}?top-comments" 
+            class="tab bg-gray-400 rounded-xl px-4 py-2 text-sm hover:bg-gray-800 hover:text-white cursor-pointer whitespace-nowrap" 
+            aria-selected="false"
+            aria-controls="top-comments">
+            Top Comments
+        </a>
+        <a  href="{% url 'userprofile' profile.user.username %}?liked-posts" 
+            hx-get="{% url 'userprofile' profile.user.username %}?liked-posts" 
+            class="tab bg-gray-400 rounded-xl px-4 py-2 text-sm hover:bg-gray-800 hover:text-white cursor-pointer whitespace-nowrap" 
+            aria-selected="false"
+            aria-controls="liked-posts">
+            Liked Posts
+        </a>
     </div>
+
 
     <!-- Tab Contents -->
     <div id="tab-contents" class="w-full flex flex-col items-center">
-        
-        <div class="grid place-items-start gap-6 max-w-xl mx-auto lg:grid-cols-2 lg:max-w-2xl xl:grid-cols-3 xl:max-w-5xl">
-
-            <article class="card bg-white rounded-2xl max-w-sm">
-                <div class="flex items-center justify-between px-4 h-12">
-                    <h3 class="text-start leading-5 mr-1">Little Jedi</h3>
-                    <div class="text-sm text-gray-400 truncate">flickr<a href="" class="hover:underline ml-1" target="blank">@John Doe</a></div>
-                </div>
-                <figure>
-                    <a href=""><img class="w-full" src="https://live.staticflickr.com/65535/50618365686_36f887ab88_c.jpg"></a>
-                </figure>
-                <div class="p-4 pb-2">
-                    <a class="flex items-center gap-1" href="">
-                        <img class="w-8 h-8 object-cover rounded-full" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                        <span class="font-bold hover:underline">Lisa</span>
-                        <span class="text-sm text-gray-400">@lisasimpson</span>
-                    </a>
-                    <p class="text-2xl px-4 font-lobster">Jedi Kitty...</p>
-                    <div class="flex items-center gap-2 text-sm mb-3 flex-wrap">
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Animals</a>
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Black & White</a>
-                    </div>
-                    <div class="flex items-center justify-between text-sm px-2">
-                        <a class="font-bold hover:underline" href="">Comments<span class="font-light text-gray-500 ml-2">3</span></a>
-                        <div class="flex items-center gap-4 [&>a:hover]:underline">
-                            <div class="flex items-center gap-1">
-                                <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">1</div>
-                            <a href="">Like</a>
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="card bg-white rounded-2xl max-w-sm">
-                <div class="flex items-center justify-between px-4 h-12">
-                    <h3 class="text-start leading-5 mr-1">Little Jedi</h3>
-                    <div class="text-sm text-gray-400 truncate">flickr<a href="" class="hover:underline ml-1" target="blank">@John Doe</a></div>
-                </div>
-                <figure>
-                    <a href=""><img class="w-full" src="https://live.staticflickr.com/65535/50618365686_36f887ab88_c.jpg"></a>
-                </figure>
-                <div class="p-4 pb-2">
-                    <a class="flex items-center gap-1" href="">
-                        <img class="w-8 h-8 object-cover rounded-full" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                        <span class="font-bold hover:underline">Lisa</span>
-                        <span class="text-sm text-gray-400">@lisasimpson</span>
-                    </a>
-                    <p class="text-2xl px-4 font-lobster">Jedi Kitty...</p>
-                    <div class="flex items-center gap-2 text-sm mb-3 flex-wrap">
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Animals</a>
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Black & White</a>
-                    </div>
-                    <div class="flex items-center justify-between text-sm px-2">
-                        <a class="font-bold hover:underline" href="">Comments<span class="font-light text-gray-500 ml-2">3</span></a>
-                        <div class="flex items-center gap-4 [&>a:hover]:underline">
-                            <div class="flex items-center gap-1">
-                                <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">1</div>
-                            <a href="">Like</a>
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
-            <article class="card bg-white rounded-2xl max-w-sm">
-                <div class="flex items-center justify-between px-4 h-12">
-                    <h3 class="text-start leading-5 mr-1">Little Jedi</h3>
-                    <div class="text-sm text-gray-400 truncate">flickr<a href="" class="hover:underline ml-1" target="blank">@John Doe</a></div>
-                </div>
-                <figure>
-                    <a href=""><img class="w-full" src="https://live.staticflickr.com/65535/50618365686_36f887ab88_c.jpg"></a>
-                </figure>
-                <div class="p-4 pb-2">
-                    <a class="flex items-center gap-1" href="">
-                        <img class="w-8 h-8 object-cover rounded-full" src="https://img.icons8.com/small/96/A9A9A9/happy.png">
-                        <span class="font-bold hover:underline">Lisa</span>
-                        <span class="text-sm text-gray-400">@lisasimpson</span>
-                    </a>
-                    <p class="text-2xl px-4 font-lobster">Jedi Kitty...</p>
-                    <div class="flex items-center gap-2 text-sm mb-3 flex-wrap">
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Animals</a>
-                        <a class="bg-gray-200 rounded-full px-3 py-1 hover:bg-gray-800 hover:text-white" href="">Black & White</a>
-                    </div>
-                    <div class="flex items-center justify-between text-sm px-2">
-                        <a class="font-bold hover:underline" href="">Comments<span class="font-light text-gray-500 ml-2">3</span></a>
-                        <div class="flex items-center gap-4 [&>a:hover]:underline">
-                            <div class="flex items-center gap-1">
-                                <img class="w-5 -mt-1" src="https://img.icons8.com/small/24/000000/fire-heart.png">1</div>
-                            <a href="">Like</a>
-                            <a href="">Edit</a>
-                            <a href="">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </article>
-
+        <div class="grid place-items-start gap-x-8 mx-auto max-w-xl
+            {% if posts.count == 2 %} lg:grid-cols-2 lg:max-w-5xl
+            {% elif posts.count > 2 %} lg:grid-cols-2 lg:max-w-5xl xl:grid-cols-3 xl:max-w-7xl
+            {% endif %}">
+            {% if posts %}
+                {% for post in posts %}
+                    {% include 'includes/post_article_profile.html' %}
+                {% endfor %}
+            {% else %}
+                <div class="text-center mt-10 w-full"><h1>No posts just yet!</h1></div>
+            {% endif %}
         </div>
-
     </div>
-
 </div>
 
 {% endblock %}
-
