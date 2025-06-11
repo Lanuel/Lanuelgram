@@ -31,6 +31,9 @@
             <div class="flex items-center gap-3 mb-6">
                 <img class="w-8 h-8 object-cover rounded-full" src="{% static 'images/avatar.svg' %}" alt="Anonymous user avatar" loading="lazy" decoding="async">
                 <span class="text-sm text-gray-500">Anonymous</span>
+                <time datetime="{{ post.created|date:'c' }}" class="text-sm text-gray-400">
+                    • {{ post.created|date:"M j, Y, g:i A" }}
+                </time>
             </div>
         {% endif %}
 
