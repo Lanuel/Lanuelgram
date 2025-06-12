@@ -2293,6 +2293,11 @@
       box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
     }
   }
+  .focus\:ring-blue-400 {
+    &:focus {
+      --tw-ring-color: var(--color-blue-400);
+    }
+  }
   .focus\:ring-blue-400\/50 {
     &:focus {
       --tw-ring-color: color-mix(in srgb, oklch(70.7% 0.165 254.624) 50%, transparent);
@@ -3484,7 +3489,7 @@ html {
   text-align: center;
   background: linear-gradient( 135deg, rgba(255, 216, 155, 0.2), rgba(25, 84, 123, 0.2) );
 }
-.cta-button {
+.cta-button_new {
   display: inline-block;
   padding: 18px 40px;
   background: linear-gradient(45deg, #ffd89b, #19547b);
@@ -3496,9 +3501,10 @@ html {
   transition: all 0.3s ease;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
-.cta-button:hover {
+.cta-button_new:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  color: green;
 }
 @media (max-width: 768px) {
   .hero {

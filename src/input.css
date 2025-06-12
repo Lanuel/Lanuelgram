@@ -753,7 +753,7 @@ html {
   );
 }
 
-.cta-button {
+.cta-button_new {
   display: inline-block;
   padding: 18px 40px;
   background: linear-gradient(45deg, #ffd89b, #19547b);
@@ -766,9 +766,10 @@ html {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.cta-button:hover {
+.cta-button_new:hover {
   transform: translateY(-3px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  color: green;
 }
 
 /* Mobile Responsive */
