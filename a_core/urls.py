@@ -27,7 +27,7 @@ from a_posts.views import custom_404
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('@lanueladmin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', include('a_home.urls')),
     path('', include('a_posts.urls')),
